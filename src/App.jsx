@@ -38,15 +38,17 @@ function Pokemon({ pokemon }) {
   const isAlreadyFavorite = favorites.find(item => item.id === pokemon.id);
 
   function handleFavorite() {
+    let newFavorites = [];
     if (isAlreadyFavorite) {
       // Rimuovo
-      const newFavorites = favorites.filter(item => item.id !== pokemon.id);
+      newFavorites = favorites.filter(item => item.id !== pokemon.id);
       setFavorites(newFavorites);
     } else {
       // Aggiunta
-      setFavorites([...favorites, pokemon])
+      newFavorites = [...favorites, pokemon]
+      setFavorites(newFavorites)
     }
-    
+    localStorage.setItem("pokedex", JSON.stringify(newFavorites));
   }
 
   function getStatClass(value) {
@@ -225,6 +227,15 @@ function App() {
   useEffect(() => {
     searchPokemon("bulbasaur");
   }, [])
+
+  useEffect(() => {
+    if (localStorage.getItem("pokedex")) {
+      const items = JSON.parse(
+        localStorage.getItem("pokedex")
+      );
+      setFavorites(items);
+    }
+  }, []);
 
   return (
     <AppContext.Provider value={{
